@@ -1,0 +1,32 @@
+{
+  "name": "brian-hall-discord-bot",
+  "version": "1.0.0",
+  "description": "This is a big ole' Brian Hall boterooni",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaybass/brian-hall-discord-bot.git"
+  },
+  "keywords": [
+    "scholar",
+    "academic",
+    "discord",
+    "bot"
+  ],
+  "author": "Alex Apmann, Jamie Danahy, Brendan Adamczak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Kaybass/brian-hall-discord-bot/issues"
+  },
+  "homepage": "https://github.com/Kaybass/brian-hall-discord-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.0.0",
+    "node-opus": "^0.2.0",
+    "opusscript": "^0.0.1",
+    "uws": "^0.12.0",
+    "erlpack": "hammerandchisel/erlpack#master"
+  }
+}
