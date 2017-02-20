@@ -12,21 +12,20 @@ client.login(Settings.token);
 
 client.on('message', message => {
 
-    if (client.user.id == message.mentions.users.firstKey()){
+    if (client.user.id === message.mentions.users.firstKey()){
         var messageSplit = message.content.match(/("[^"]*")|[^ ]+/g);
 
-        console.log(messageSplit);
+        if(messageSplit[0] === '<@' + client.user.id + '>' && messageSplit.length >= 2){
+            
+            var response = Responses[messageSplit[1]];
 
-        if(messageSplit[0] == '<@' + client.user.id + '>'){
-            if(messageSplit[1] == "philosophy"){
-                message.reply(Responses.Philosophy);
-            }else if(messageSplit[1] == "about"){
-                message.reply(Responses.About);
-            }else if(messageSplit[1] == "book"){
-                message.reply(Responses.Book);
-            }else{
-                message.reply(Responses.Annoying);
+            if(response === undefined){
+                message.reply(Responses.annoying);
+            } else{
+                message.reply(response);
             }
+        }else{
+            message.reply(Responses.Annoying);
         }
     }
 });
