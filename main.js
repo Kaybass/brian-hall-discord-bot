@@ -25,7 +25,7 @@ client.on('message', message => {
                 message.reply(response);
             }
         }else{
-            message.reply(Responses.Annoying);
+            message.reply(Responses.annoying);
         }
     }
 });
