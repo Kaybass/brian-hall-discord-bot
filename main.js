@@ -17,7 +17,7 @@ client.on('message', message => {
 
         if(messageSplit[0] === '<@' + client.user.id + '>' && messageSplit.length >= 2){
             
-            var response = Responses[messageSplit[1]];
+            var response = Responses[messageSplit[1].toLowerCase()];
 
             if(response === undefined){
                 message.reply(Responses.annoying);
