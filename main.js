@@ -6,10 +6,35 @@ Responses = require("./Responses.json")
 
 Discord = require('discord.js');
 
+twitter = require("./twitter.js")
+
 client = new Discord.Client();
 
 client.login(Settings.token);
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ global chat channel
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+var channel;
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/ When client inits. set game and global channel
+/ Sends few mesages to tell everboy brain
+/ halls in the house.
+/ 
+/ Also send the channel object to twitter.js .
+/ so it can send message when it recieves tweets
+//*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+client.on("ready", function(){
+    client.user.setGame("Harvest Moon");
+    channel = client.channels.find("name", "general");
+    channel.sendMessage("Rebooting",{"tts": true  }); //tts": true for robot voice
+    channel.sendCode("C", "return 'DOCTOR B.HALL'");
+    
+
+    twitter.handlerForOnSteamTweet(channel);
+})
 AttachmentFunctions = {
     "grade" : attachment => {
         console.log(attachment.url);
@@ -57,4 +82,19 @@ client.on('message', message => {
             message.reply(Responses._imagesonly);
         }
     }
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    / if nobody's sent a message in the last minite
+    / or so send a message.  If your receiving
+    / lots of messages then restart the timer.
+    //*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    clearTimeout()
+    setTimeout(timedMessage,60000)
 });
+
+
+var timedMessage = function(){
+    console.log("\n\n")
+    var channel = client.channels.find("name", "general");
+    channel.sendMessage("Is anybody there")
+    
+}
