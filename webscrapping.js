@@ -12,7 +12,7 @@ var cheerio = require('cheerio');
 const request = require("tinyreq");
 const cheerioReq = require("cheerio-req");
 
-var game = "fuck"
+var game = "Conan Exiles"
 game = game.replace(/ /g,'+')
 var baseUrl = "http://store.steampowered.com/search/?snr=1_4_4__12&term="
 console.log(baseUrl + game)
@@ -38,8 +38,12 @@ cheerioReq(urll, (err, $) => {
     bundles can have appid
     all this that are not packages have appid
     */
+    asdf = []
     $('.app_tag').each(function(i, elem) {
-        console.log($(this).text())
+        a = $(this).text().trim().replace(/[^\w\s]/gi, '')
+        if(a != ''){
+            console.log(a)
+        }  
     });
     console.log("ya")
 });
