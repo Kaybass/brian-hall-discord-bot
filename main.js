@@ -10,6 +10,10 @@ client = new Discord.Client();
 
 client.login(Settings.token);
 
+var channel;
+var channelConnection;
+var isJazzing = false;
+
 AttachmentFunctions = {
     "grade" : attachment => {
         console.log(attachment.url);
@@ -26,12 +30,24 @@ client.on('message', message => {
         if(messageSplit[0] === '<@' + client.user.id + '>' && messageSplit.length >= 2){
             
             var response = Responses[messageSplit[1].toLowerCase()];
-
+			
             if(response === undefined){
                 message.reply(Responses._annoying);
             } else{
                 message.reply(response);
             }
+			if(messageSplit[1].toLowerCase() == "jazz")
+			{
+				channel.join().then(connection => {
+					channelConnection = connection;
+					const dispatcher = connection.playFile('jazz.mp3');
+					isJazzing = true;
+				});
+			}
+			else if(messageSplit[1].toLowerCase() == "stopthejazz")
+			{
+				channel.leave();
+			}
         }else{
             message.reply(Responses._annoying);
         }
@@ -58,3 +74,18 @@ client.on('message', message => {
         }
     }
 });
+client.on('ready', () => {
+  channel = client.channels.get('164382040215650304');
+});
+function intervalCheck()
+{	
+	if(isJazzing)
+	{
+		if(!channelConnection.speaking)
+		{
+			channel.leave();
+		}
+	}
+}
+
+setInterval(intervalCheck, 1000);
