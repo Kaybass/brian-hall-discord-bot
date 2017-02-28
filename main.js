@@ -121,7 +121,7 @@ function intervalCheck()
 	{
 		if(!channelConnection.speaking)
 		{
-			channel.leave();
+			voiceChannel.leave();
 		}
 	}
 }
