@@ -1,13 +1,36 @@
-var cheerio = require('cheerio');
-const request = require("tinyreq");
 const cheerioReq = require("cheerio-req");
 
+/*
+got to get 
+promises working
+https://www.promisejs.org/ 
 
+http://www.datchley.name/es6-promises/
+
+
+//web scrapping
+//https://scotch.io/tutorials/scraping-the-web-with-node-jsn
+/*
+tutorial i got this from
+https://www.codementor.io/johnnyb/how-to-write-a-web-scraper-in-nodejs-du108266t
+
+tutorial on promises
+https://www.youtube.com/watch?v=104J7_HyaG4
+*/ 
+
+
+
+var error = function(error){
+    console.log("noo")
+}
 
 module.exports.getSteamIdFromName = function(gameString) {
     gameString = gameString.replace(/ /g,'+')
     var baseUrl = "http://store.steampowered.com/search/?snr=1_4_4__12&term="
-    cheerioReq(baseUrl+gameString, (err, $) => {
+    var url =  baseUrl + gameString ;
+    var deferred = Promise.defer()
+
+    cheerioReq(url, (err, $) => {
         /*
         bundles can have appid
         all this that are not packages have appid
@@ -20,28 +43,41 @@ module.exports.getSteamIdFromName = function(gameString) {
         console.log($('.search_result_row').attr("data-ds-appid"))     //is fal all singler games
 
         if(appId != undefined && bundleId == undefined){
-            console.log("everthing all good")
+            console.log("everthing all good");
+            deferred.resolve(appId);
         }
-    });
+        else{
+            deferred.reject("bad title");
+        }
+        
+    })
+    return deferred.promise;
 };
+
 
 
 module.exports.getTagsFromSteamId = function(steamId){
     var baseUrl = "http://store.steampowered.com/app/";
+    var deferred = Promise.defer()
     cheerioReq(baseUrl + steamId, (err, $) => {
         /*//////////////////////////////////////////////////
         /    bundles can have appid
         /    all this that are not packages have appid
         //////////////////////////////////////////////////*/
+        console.log("getting tags steam")
         listOfTags = [];
         $('.app_tag').each(function(i, elem) {
             tag = $(this).text().trim().replace(/[^\w\s]/gi, '')
-            if(a != ''){
-                console.log(a);
-                listOfTags.append(tag);
+            
+            if(tag != ''){
+                console.log(tag);
+                listOfTags.push(tag);
             }  
         });
         console.log("ya")
+        deferred.resolve(listOfTags);
     });
-
+    return deferred.promise;
 }
+
+
