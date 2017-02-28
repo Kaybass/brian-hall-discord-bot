@@ -119,7 +119,7 @@ function intervalCheck()
 {	
 	if(isJazzing)
 	{
-		if(!channelConnection.speaking)
+		if(!voiceChannelConnection.speaking)
 		{
 			voiceChannel.leave();
 		}
