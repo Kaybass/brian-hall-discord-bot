@@ -112,7 +112,7 @@ client.on('message', message => {
 var timedMessage = function(){
     console.log("\n\n")
     var channel = client.channels.find("name", "general");
-    channel.sendMessage("Is anybody there")
+    //channel.sendMessage("Is anybody there")
     
 }
 function intervalCheck()
