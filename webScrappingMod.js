@@ -38,9 +38,9 @@ module.exports.getSteamIdFromName = function(gameString) {
         packageId = $('.search_result_row').attr("data-ds-packageid");
         bundleId = $('.search_result_row').attr("data-ds-bundleid");
         appId = $('.search_result_row').attr("data-ds-appid")
-        console.log($('.search_result_row').attr("data-ds-packageid"));  //http://store.steampowered.com/search/?snr=1_bundle_4__12&term=grand+theft+auto
-        console.log($('.search_result_row').attr("data-ds-bundleid"));  //http://store.steampowered.com/bundle/2533/
-        console.log($('.search_result_row').attr("data-ds-appid"))     //is fal all singler games
+        //console.log($('.search_result_row').attr("data-ds-packageid"));  //http://store.steampowered.com/search/?snr=1_bundle_4__12&term=grand+theft+auto
+        //console.log($('.search_result_row').attr("data-ds-bundleid"));  //http://store.steampowered.com/bundle/2533/
+        //console.log($('.search_result_row').attr("data-ds-appid"))     //is fal all singler games
 
         if(appId != undefined && bundleId == undefined){
             console.log("everthing all good");
@@ -64,20 +64,28 @@ module.exports.getTagsFromSteamId = function(steamId){
         /    bundles can have appid
         /    all this that are not packages have appid
         //////////////////////////////////////////////////*/
-        console.log("getting tags steam")
         listOfTags = [];
         $('.app_tag').each(function(i, elem) {
             tag = $(this).text().trim().replace(/[^\w\s]/gi, '')
             
             if(tag != ''){
-                console.log(tag);
                 listOfTags.push(tag);
             }  
         });
-        console.log("ya")
         deferred.resolve(listOfTags);
     });
     return deferred.promise;
 }
 
+module.exports.getTagsFromName = function(name){
+    var deferred = Promise.defer()
+    module.exports.getSteamIdFromName("ICEY").then((data) =>{
+        module.exports.getTagsFromSteamId(data).then((tag)=>{
+            deferred.resolve(tag)
+        })
+    }).catch((error) =>{
+        console.log(error)
+    })
+    return deferred.promise;
+}
 

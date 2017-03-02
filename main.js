@@ -6,7 +6,9 @@ Responses = require("./Responses.json")
 
 Discord = require('discord.js');
 
-twitter = require("./twitter.js")
+twitter = require("./twitter.js");
+
+Steam = require("./steam.js");
 
 client = new Discord.Client();
 
@@ -27,7 +29,7 @@ var channel;
 / so it can send message when it recieves tweets
 //*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 client.on("ready", function(){
-    client.user.setGame("Harvest Moon");
+    client.user.setGame("stardew vally"); // Spooky's Jump Scare Mansion: HD Renovation
     channel = client.channels.find("name", "general")
     //channel.sendMessage("Rebooting",{"tts": true  }); //tts": true for robot voice
     //channel.sendCode("C", "return 'DOCTOR B.HALL'");
@@ -55,12 +57,6 @@ client.on('message', message => {
             if(response === undefined){
                 message.reply(Responses._annoying);
             } else{
-                
-            /*
-                Probably remove all the code below and just put
-                it right here.
-                Check for a file size here. 
-            */
                 message.reply(response);
             }
         }else{
@@ -100,9 +96,10 @@ client.on('message', message => {
 
 var timedMessage = function(){
     console.log("\n\n")
-    var channel = client.channels.find("name", "general");
     //channel.sendMessage("Is anybody there")   
 }
+
+
 /*
 fires a events when somebody presence changes.
 So if they start a new game or log off.
@@ -110,36 +107,45 @@ https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=presenceUpdate
 info on presence
 https://discord.js.org/#/docs/main/stable/class/Presence?scrollTo=game
  */
-/*
+
 client.on('presenceUpdate', (oldPresence, newPresence) => {
-    //console.log(oldPresence)
-    console.log(newPresence)
-    
-    console.log("old stuff")
-    console.log(oldPresence.frozenPresence.status)
-    console.log("new stuff")
-    console.log(newPresence.guild.presences)
-    console.log(newPresence.guild.presences[channel.id])
-    
-    console.log("\n\n\n\n")
-    console.log("channel id")
-    console.log(channel.id)
-    console.log("\n\n\n\n")
+
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    / get the old presence
+    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    //console.log(oldPresence.frozenPresence.status)
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    / get a user and then with a promise get the 
+    / presence so you can get the game idea    
+    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    client.fetchUser(newPresence.id).then((user) =>{
+        //console.log(user.presence)
+        if(user.presence.game !=  null){
+            //console.log(user.presence.game.name)
+
+            Steam.numberOfUsers(user.presence.game.name).then((numberofUsers)=>{
+                if(numberofUsers < 100){
+                    channel.sendMessage("what a indie darling")
+                }
+            });
+
+            //Steam.getTags(user.presence.game.name).then((info)=>{
+                //console.log(info)
+            //});
+
+            //Steam.appDetails(user.presence.game.name).then((info)=>{
+            //    info[]
+            //});
+
+        }
+        
+    })
+
     
 });
-*/
+
 /*
 client.on('typingStart', (channel,user)=>{
     console.log("typing");
 })
-*/
-/*
-client.on("presence", (oldPresence, newPresence) => {
-    var now =  Date().toLocaleString()
-    if (usr.status == 'offline'){
-        console.log(usr.username + ' is now offline ['+now+']');
-    } else if (usr.status == 'online') {
-        console.log(usr.username + ' is now online ['+now+']');
-    }
-});
 */
