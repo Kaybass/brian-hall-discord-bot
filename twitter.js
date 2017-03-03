@@ -5,12 +5,26 @@ var Twit = require('twit');
 
 
 var T = new Twit({
-    consumer_key:         Settings.twitter.consumer_key//'7WAXNL8IWRbhoFrYafoqbJqVp'
-  , consumer_secret:      Settings.twitter.consumer_secret//'8IbsmnXpqhgQzOXrFsRFFMp3fScOmF9nE0WJSD5HvrcbWslvfA'
-  , access_token:         Settings.twitter.access_token//'833757833430757377-mYGTbJK6qj85xzfwajVexqSLNKnRYjz'
-  , access_token_secret:  Settings.twitter.access_token_secret//'79MLFvA4NGVKJsasN5N65wQ5uVi90FL4hvtEqLVQWXguM'
+    consumer_key:         Settings.twitter.consumer_key,
+    consumer_secret:      Settings.twitter.consumer_secret,
+    access_token:         Settings.twitter.access_token,
+    access_token_secret:  Settings.twitter.access_token_secret
 })
 
+
+
+
+
+module.exports.handlerForOnSteamTweet = function(channel) {
+  var GaryJohnsonStream = T.stream('user', { screen_name: 'GovGaryJohnson' })
+  GaryJohnsonStream.on('tweet', function (tweet) {
+    channel.sendMessage(tweet)
+  })
+};
+
+//-----------------------------------------------------------------------
+// Examples
+//
 //  Get tweets from a specific person
 //  Ex.
 //    GaryJohnson
@@ -35,12 +49,3 @@ stream.on('tweet', function (tweet) {
   console.log(tweet)
 })
 */
-
-
-
-module.exports.handlerForOnSteamTweet = function(channel) {
-  var GaryJohnsonStream = T.stream('user', { screen_name: 'GovGaryJohnson' })
-  GaryJohnsonStream.on('tweet', function (tweet) {
-    channel.sendMessage(tweet)
-  })
-};
