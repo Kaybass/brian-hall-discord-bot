@@ -4,6 +4,8 @@ Settings = require("./settings.json")
 
 Responses = require("./Responses.json")
 
+VoiceResponses = require("./VoiceResponses.json")
+
 Discord = require('discord.js');
 
 twitter = require("./twitter.js")
@@ -62,15 +64,17 @@ client.on('message', message => {
             } else{
                 message.reply(response);
             }
-			if(messageSplit[1].toLowerCase() == "jazz")
+			
+			var filename = VoiceResponses[messageSplit[1].toLowerCase()];
+			if(filename != undefined)
 			{
 				voiceChannel.join().then(connection => {
 					voiceChannelConnection = connection;
-					const dispatcher = connection.playFile('jazz.mp3');
+					const dispatcher = connection.playFile(filename);
 					isJazzing = true;
 				});
 			}
-			else if(messageSplit[1].toLowerCase() == "stopthejazz")
+			else if(messageSplit[1].toLowerCase() == "stopTalking")
 			{
 				voiceChannel.leave();
 			}
