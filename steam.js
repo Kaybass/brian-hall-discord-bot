@@ -25,57 +25,57 @@ var getTags = function(name){
 }
 
 module.exports.getTags = function(name){
-    var deferred = Promise.defer()
-    webScrappingMod.getTagsFromName(name).then((appId) =>{
-        deferred.resolve(appId)
+    return new Promise(function(resolve, reject) {
+        webScrappingMod.getTagsFromName(name).then((appId) =>{
+            resolve(appId)
+        });
     });
-    return deferred.promise;
 }
 
 module.exports.numberOfUsers = function(name){
-    var deferred = Promise.defer()
-    scrapeSteamId(name
-    ).then((appId)=>{
-        userStats.GetNumberOfCurrentPlayers(appId).done(function(result){
-            deferred.resolve(result)
+    return new Promise(function(resolve, reject) {
+        scrapeSteamId(name
+        ).then((appId)=>{
+            userStats.GetNumberOfCurrentPlayers(appId).done(function(result){
+                resolve(result)
+            });
+            
         });
-        
     });
-    return deferred.promise;
 }
 
 module.exports.appDetails = function(name,listAttributes){
-    var deferred = Promise.defer()
-    scrapeSteamId(name).then((appId)=>{
-        app.appDetails(appId).done(function(result){
+    return new Promise(function(resolve, reject) {
+        scrapeSteamId(name).then((appId)=>{
+            app.appDetails(appId).done(function(result){
 
-            returnObject = {};
-            returnObject["metacritic"] = result.metacritic.score;
-            returnObject["categories"] = [];
-            returnObject["genres"] = [];
+                returnObject = {};
+                returnObject["metacritic"] = result.metacritic.score;
+                returnObject["categories"] = [];
+                returnObject["genres"] = [];
 
-            for (var i = 0, len = result.categories.length; i < len; i++) {
-                returnObject["categories"].push(result.categories[i]["description"])
-            }
-            for (var i = 0, len = result.genres.length; i < len; i++) {
-                returnObject["genres"].push(result.genres[i]["description"])
-            }
+                for (var i = 0, len = result.categories.length; i < len; i++) {
+                    returnObject["categories"].push(result.categories[i]["description"])
+                }
+                for (var i = 0, len = result.genres.length; i < len; i++) {
+                    returnObject["genres"].push(result.genres[i]["description"])
+                }
 
 
-            deferred.resolve(returnObject)
+                resolve(returnObject)
+            });
         });
     });
-    return deferred.promise;
-    
 }
 
 /*------------------------------------------------------------
 Examples 
-*/ 
-//webScrappingMod.getSteamIdFromName("war thunder").then((appId) =>{
-//    console.log("got completed")
+*/
+/*
+webScrappingMod.getSteamIdFromName("tis1").then((appId) =>{
+    console.log("got completed")
 
-    /*
+    
     app.appDetails(appId).done(function(result){
       console.log(result);
     });
@@ -100,6 +100,8 @@ Examples
       console.log(result);
     });
     //*/
-//}).catch((error) =>{
-//    console.log(error)
-//})
+    /*
+    }).catch((error) =>{
+   console.log(error)
+    });
+    */

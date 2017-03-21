@@ -10,6 +10,8 @@ Discord = require('discord.js');
 
 twitter = require("./twitter.js")
 
+Steam = require("./steam.js");
+
 client = new Discord.Client();
 
 client.login(Settings.token);
@@ -35,7 +37,7 @@ var isJazzing = false;
 client.on("ready", function(){
     client.user.setGame("Harvest Moon");
     channel = client.channels.find("name", "general");
-    channel.sendMessage("Rebooting",{"tts": true  }); //tts": true for robot voice
+    channel.sendMessage("Rebooting",{"tts": true  });
     channel.sendCode("C", "return 'DOCTOR B.HALL'");
 	voiceChannel = client.channels.get('164382040215650304');
 
@@ -105,14 +107,8 @@ client.on('message', message => {
     / lots of messages then restart the timer.
     //*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
     clearTimeout()
-    setTimeout(timedMessage,60000)
 });
 
-
-var timedMessage = function(){
-    var channel = client.channels.find("name", "general");
-    
-}
 function intervalCheck()
 {	
 	if(isJazzing)
@@ -125,3 +121,56 @@ function intervalCheck()
 }
 
 setInterval(intervalCheck, 1000);
+
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/  fires a events when somebody presence changes.
+/  So if they start a new game or log off.
+/  https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=presenceUpdate
+/  info on presence
+/  https://discord.js.org/#/docs/main/stable/class/Presence?scrollTo=game
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+client.on('presenceUpdate', (oldPresence, newPresence) => {
+
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    / get the old presence
+    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    //console.log(oldPresence.frozenPresence.status)
+    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    / get a user and then with a promise get the 
+    / presence so you can get the game idea    
+    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+    client.fetchUser(newPresence.id).then((user) =>{
+        //console.log(user.presence)
+        if(user.presence.game !=  null){
+            game = user.presence.game.name.replace(".x86_64","").replace(".x64","")
+            console.log(game)
+            
+            Steam.numberOfUsers(game).then((numberofUsers)=>{
+                console.log("got through")
+                if(numberofUsers < 100){
+                    channel.sendMessage("what a indie darling")
+                }
+            });
+            
+            Steam.getTags(user.presence.game.name).then((info)=>{
+                for(var i= 0; i < info.length; i++){
+                    if(info[i] = "anime"){
+                        channel.sendMessage("We can not tolerate this kind of behavior.")
+                    }
+                }
+            });
+            
+            Steam.appDetails(user.presence.game.name).then((info)=>{
+                if(info["metacritic"] < 50){
+                    channel.sendMessage("It pains me to see you hurt yourself like this.")
+                }
+            });
+            
+
+        }
+        
+    })
+});
