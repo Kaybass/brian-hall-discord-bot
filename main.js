@@ -8,21 +8,21 @@ VoiceResponses = require("./VoiceResponses.json")
 
 Discord = require('discord.js');
 
-twitter = require("./twitter.js");
-
-Steam = require("./steam.js");
+twitter = require("./twitter.js")
 
 client = new Discord.Client();
 
 client.login(Settings.token);
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/ global vars
+/ global chat channel
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 var channel;
 var voiceChannel;
 var voiceChannelConnection;
 var isJazzing = false;
+
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 / When client inits. set game and global channel
@@ -33,17 +33,16 @@ var isJazzing = false;
 / so it can send message when it recieves tweets
 //*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 client.on("ready", function(){
-    client.user.setGame("stardew vally"); // Spooky's Jump Scare Mansion: HD Renovation
-    channel = client.channels.find("name", "general")
-    //channel.sendMessage("Rebooting",{"tts": true  }); //tts": true for robot voice
-    //channel.sendCode("C", "return 'DOCTOR B.HALL'");
-    voiceChannel = client.channels.get('164382040215650304');
+    client.user.setGame("Harvest Moon");
+    channel = client.channels.find("name", "general");
+    channel.sendMessage("Rebooting",{"tts": true  }); //tts": true for robot voice
+    channel.sendCode("C", "return 'DOCTOR B.HALL'");
+	voiceChannel = client.channels.get('164382040215650304');
 
     twitter.handlerForOnSteamTweet(channel);
 })
 AttachmentFunctions = {
     "grade" : attachment => {
-        console.log(attachment.url);
 
         attachment.message.reply("F");
     }
@@ -60,7 +59,7 @@ client.on('message', message => {
 			
             if(response === undefined){
                 message.reply(Responses._annoying);
-            } else{
+            } else if(response!="noresponse"){
                 message.reply(response);
             }
 			
@@ -69,11 +68,11 @@ client.on('message', message => {
 			{
 				voiceChannel.join().then(connection => {
 					voiceChannelConnection = connection;
-					const dispatcher = connection.playFile(filename);
+					const dispatcher = connection.playFile("sfx/" + filename);
 					isJazzing = true;
 				});
 			}
-			else if(messageSplit[1].toLowerCase() == "stopTalking")
+			else if(messageSplit[1].toLowerCase() == "stoptalking")
 			{
 				voiceChannel.leave();
 			}
@@ -84,8 +83,6 @@ client.on('message', message => {
         var messageSplit = message.content.match(/("[^"]*")|[^ ]+/g);
 
         var attachment = Array.from(message.attachments.values())[0];
-
-        console.log(attachment, attachment.width);
 
         if(messageSplit[0] === '<@' + client.user.id + '>' && attachment.width !== undefined && messageSplit.length >= 2){
             
@@ -113,9 +110,7 @@ client.on('message', message => {
 
 
 var timedMessage = function(){
-    //console.log("\n\n")
     var channel = client.channels.find("name", "general");
-    //channel.sendMessage("Is anybody there")
     
 }
 function intervalCheck()
@@ -130,56 +125,3 @@ function intervalCheck()
 }
 
 setInterval(intervalCheck, 1000);
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/  fires a events when somebody presence changes.
-/  So if they start a new game or log off.
-/  https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=presenceUpdate
-/  info on presence
-/  https://discord.js.org/#/docs/main/stable/class/Presence?scrollTo=game
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-client.on('presenceUpdate', (oldPresence, newPresence) => {
-
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    / get the old presence
-    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    //console.log(oldPresence.frozenPresence.status)
-    /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    / get a user and then with a promise get the 
-    / presence so you can get the game idea    
-    /~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-    client.fetchUser(newPresence.id).then((user) =>{
-        //console.log(user.presence)
-        if(user.presence.game !=  null){
-            //console.log(user.presence.game.name)
-            /*
-            this will all fail if you don't have the steam keys.
-            */
-            Steam.numberOfUsers(user.presence.game.name).then((numberofUsers)=>{
-                if(numberofUsers < 100){
-                    channel.sendMessage("what a indie darling")
-                }
-            });
-
-            //Steam.getTags(user.presence.game.name).then((info)=>{
-                //console.log(info)
-            //});
-
-            //Steam.appDetails(user.presence.game.name).then((info)=>{
-            //    info[]
-            //});
-
-        }
-        
-    })
-
-    
-});
-
-/*
-client.on('typingStart', (channel,user)=>{
-    console.log("typing");
-})
-*/
