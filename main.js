@@ -12,9 +12,16 @@ twitter = require("./twitter.js")
 
 Steam = require("./steam.js");
 
+Memes = require("./memes.json")
+
 client = new Discord.Client();
 
 client.login(Settings.token);
+
+function getAMeme(){
+    return Memes.memes[Math.random(5)]
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 / global chat channel
@@ -23,7 +30,6 @@ var channel;
 var voiceChannel;
 var voiceChannelConnection;
 var isJazzing = false;
-
 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,7 +41,7 @@ var isJazzing = false;
 / so it can send message when it recieves tweets
 //*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 client.on("ready", function(){
-    client.user.setGame("Harvest Moon");
+    client.user.setGame("Diablo 3");
     channel = client.channels.find("name", "general");
     channel.sendMessage("Rebooting",{"tts": true  });
     channel.sendCode("C", "return 'DOCTOR B.HALL'");
@@ -96,7 +102,7 @@ client.on('message', message => {
                 response(attachment);
             }
         }else if (messageSplit.length >= 2){
-            message.reply(Responses._annoyingimage);
+            message.reply(getAMeme());
         }else {
             message.reply(Responses._imagesonly);
         }
